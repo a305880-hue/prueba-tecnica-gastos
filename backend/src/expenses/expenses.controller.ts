@@ -19,6 +19,13 @@ export class ExpensesController {
     return this.expensesService.search(query);
   }
 
+  // Genera 10 gastos de prueba automáticos
+  // Ruta: GET /api/expenses/seed
+  @Get('seed')
+  seed() {
+    return this.expensesService.seed();
+  }
+
   // REQUISITO: Endpoint de Listado con Paginación
   // Ruta: GET /api/expenses?page=1&limit=10
   @Get()

@@ -39,6 +39,28 @@ export class ExpensesService {
     });
   }
 
+  // 3. SEED: Genera 10 gastos de prueba para llenar la base de datos
+  async seed() {
+    const ejemplos = [
+      { description: 'Tacos de pastor', amount: 120, category: 'Comida' },
+      { description: 'Gasolina', amount: 500, category: 'Transporte' },
+      { description: 'Cine', amount: 180, category: 'Entretenimiento' },
+      { description: 'Farmacia', amount: 250, category: 'Salud' },
+      { description: 'Súper semanal', amount: 850, category: 'Comida' },
+      { description: 'Uber al centro', amount: 95, category: 'Transporte' },
+      { description: 'Suscripción streaming', amount: 219, category: 'Entretenimiento' },
+      { description: 'Consulta médica', amount: 600, category: 'Salud' },
+      { description: 'Café con amigos', amount: 140, category: 'Comida' },
+      { description: 'Papelería', amount: 75, category: 'Otros' },
+    ];
+
+    const gastos = ejemplos.map((e) =>
+      this.expenseRepository.create({ ...e, date: new Date() }),
+    );
+    await this.expenseRepository.save(gastos);
+    return { message: 'Se crearon 10 gastos de prueba', total: gastos.length };
+  }
+
   findOne(id: number) {
     return this.expenseRepository.findOneBy({ id });
   }

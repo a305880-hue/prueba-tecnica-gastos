@@ -10,6 +10,7 @@ async function bootstrap() {
   // 2. Habilitar CORS
   app.enableCors(); 
   
-  await app.listen(3000);
+  // 3. Puerto dinámico: Render asigna el puerto por variable de entorno
+  await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
