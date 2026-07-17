@@ -73,7 +73,7 @@ const columns = [
 // --- PERFILES: cargar, elegir y cambiar ---
 async function fetchProfiles() {
   try {
-    const res = await fetch(`${api}/api/expenses/profiles`)
+    const res = await fetch(`${api}/api/profiles`)
     availableProfiles.value = await res.json()
   } catch (error) {
     console.error('Error cargando perfiles:', error)
@@ -86,6 +86,17 @@ function selectProfile(name: string) {
     toast.add({ title: 'Escribe un nombre para tu perfil', color: 'warning' })
     return
   }
+
+  // Registramos el perfil en la base de datos para que quede guardado
+  // aunque todavía no tenga gastos (si ya existía, el backend lo reutiliza).
+  fetch(`${api}/api/profiles`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: clean })
+  }).catch((error) => {
+    console.error('Error registrando el perfil:', error)
+  })
+
   profile.value = clean
   localStorage.setItem('gastos-perfil', clean)
   newProfileName.value = ''

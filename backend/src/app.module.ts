@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config'; // <--- Importante
 import { ExpensesModule } from './expenses/expenses.module';
+import { ProfilesModule } from './profiles/profiles.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { ExpensesModule } from './expenses/expenses.module';
     ),
     
     ExpensesModule,
+    ProfilesModule,
   ],
 })
 export class AppModule {}

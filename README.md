@@ -21,8 +21,10 @@ Puedes generar 10 gastos automáticos visitando: `/api/expenses/seed` (opcional:
 
 ## 👤 Perfiles
 Cada persona elige o crea un perfil al entrar y solo ve sus propios gastos.
-El navegador recuerda el perfil elegido. Endpoints relacionados:
-* `GET /api/expenses/profiles` — lista los perfiles existentes.
+El navegador recuerda el perfil elegido y los perfiles quedan guardados
+en su propia tabla aunque todavía no tengan gastos. Endpoints relacionados:
+* `GET /api/profiles` — lista los perfiles guardados.
+* `POST /api/profiles` — registra un perfil nuevo (`{ "name": "Sebastian" }`).
 * `GET /api/expenses/total?profile=X` — total de TODOS los gastos del perfil.
 * Los endpoints de listado y búsqueda aceptan `&profile=X` para filtrar.
 
