@@ -25,7 +25,9 @@ export class ExpensesService {
     return this.expenseRepository.find({
       skip: (page - 1) * limit, // Saltar los anteriores
       take: limit,              // Tomar solo la cantidad pedida
-      order: { date: 'DESC' }   // Ordenar del más reciente al más antiguo
+      // Ordenar del más reciente al más antiguo.
+      // El id desempata cuando dos gastos tienen la misma fecha.
+      order: { date: 'DESC', id: 'DESC' }
     });
   }
 
@@ -35,7 +37,7 @@ export class ExpensesService {
       where: {
         description: Like(`%${query}%`), // Busca coincidencias parciales
       },
-      order: { date: 'DESC' }
+      order: { date: 'DESC', id: 'DESC' }
     });
   }
 
