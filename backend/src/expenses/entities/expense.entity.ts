@@ -16,4 +16,8 @@ export class Expense {
 
   @Column('varchar', { length: 50 })
   category: string;
+
+  // Perfil dueño del gasto. Los gastos viejos quedan en 'General'.
+  @Column('varchar', { length: 50, default: 'General' })
+  profile: string;
 }

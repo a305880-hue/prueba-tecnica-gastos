@@ -15,14 +15,16 @@ export class ExpensesService {
   create(createExpenseDto: CreateExpenseDto) {
     const newExpense = this.expenseRepository.create({
       ...createExpenseDto,
+      profile: createExpenseDto.profile || 'General',
       date: new Date(),
     });
     return this.expenseRepository.save(newExpense);
   }
 
-  // 1. PAGINACIÓN: Ahora recibe página y límite
-  findAll(page: number = 1, limit: number = 10) {
+  // 1. PAGINACIÓN: Recibe página, límite y el perfil que consulta
+  findAll(page: number = 1, limit: number = 10, profile?: string) {
     return this.expenseRepository.find({
+      where: profile ? { profile } : {}, // Cada perfil solo ve sus gastos
       skip: (page - 1) * limit, // Saltar los anteriores
       take: limit,              // Tomar solo la cantidad pedida
       // Ordenar del más reciente al más antiguo.
@@ -31,18 +33,41 @@ export class ExpensesService {
     });
   }
 
-  // 2. BÚSQUEDA: Nuevo método para buscar por descripción
-  search(query: string) {
+  // 2. BÚSQUEDA: Busca por descripción dentro del perfil
+  search(query: string, profile?: string) {
     return this.expenseRepository.find({
       where: {
         description: Like(`%${query}%`), // Busca coincidencias parciales
+        ...(profile ? { profile } : {}),
       },
       order: { date: 'DESC', id: 'DESC' }
     });
   }
 
-  // 3. SEED: Genera 10 gastos de prueba para llenar la base de datos
-  async seed() {
+  // 3. TOTAL GLOBAL: Suma TODOS los gastos del perfil (todas las páginas)
+  async total(profile?: string) {
+    const qb = this.expenseRepository
+      .createQueryBuilder('expense')
+      .select('COALESCE(SUM(expense.amount), 0)', 'sum');
+    if (profile) {
+      qb.where('expense.profile = :profile', { profile });
+    }
+    const { sum } = await qb.getRawOne();
+    return { total: Number(sum) };
+  }
+
+  // 4. PERFILES: Lista los nombres de perfil que ya tienen gastos
+  async profiles() {
+    const rows = await this.expenseRepository
+      .createQueryBuilder('expense')
+      .select('DISTINCT expense.profile', 'profile')
+      .orderBy('expense.profile', 'ASC')
+      .getRawMany();
+    return rows.map((r) => r.profile);
+  }
+
+  // 5. SEED: Genera 10 gastos de prueba para llenar la base de datos
+  async seed(profile: string = 'General') {
     const ejemplos = [
       { description: 'Tacos de pastor', amount: 120, category: 'Comida' },
       { description: 'Gasolina', amount: 500, category: 'Transporte' },
@@ -57,7 +82,7 @@ export class ExpensesService {
     ];
 
     const gastos = ejemplos.map((e) =>
-      this.expenseRepository.create({ ...e, date: new Date() }),
+      this.expenseRepository.create({ ...e, profile, date: new Date() }),
     );
     await this.expenseRepository.save(gastos);
     return { message: 'Se crearon 10 gastos de prueba', total: gastos.length };

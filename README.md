@@ -17,4 +17,14 @@ Aplicación Full Stack para administrar gastos personales, filtrarlos y visualiz
 4. Frontend: `cd frontend && npm install && npm run dev`
 
 ## 🧪 Datos de Prueba
-Puedes generar 10 gastos automáticos visitando: `/api/expenses/seed`
+Puedes generar 10 gastos automáticos visitando: `/api/expenses/seed` (opcional: `?profile=TuNombre`).
+
+## 👤 Perfiles
+Cada persona elige o crea un perfil al entrar y solo ve sus propios gastos.
+El navegador recuerda el perfil elegido. Endpoints relacionados:
+* `GET /api/expenses/profiles` — lista los perfiles existentes.
+* `GET /api/expenses/total?profile=X` — total de TODOS los gastos del perfil.
+* Los endpoints de listado y búsqueda aceptan `&profile=X` para filtrar.
+
+## 🌗 Tema
+La interfaz incluye botón para alternar entre modo claro y oscuro.

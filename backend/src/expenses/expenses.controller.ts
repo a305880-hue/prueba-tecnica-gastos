@@ -12,26 +12,48 @@ export class ExpensesController {
     return this.expensesService.create(createExpenseDto);
   }
 
-  // REQUISITO: Endpoint de Búsqueda 
-  // Ruta: GET /api/expenses/search?query=tacos
+  // REQUISITO: Endpoint de Búsqueda
+  // Ruta: GET /api/expenses/search?query=tacos&profile=Sebastian
   @Get('search')
-  search(@Query('query') query: string) {
-    return this.expensesService.search(query);
+  search(@Query('query') query: string, @Query('profile') profile?: string) {
+    return this.expensesService.search(query, profile);
   }
 
   // Genera 10 gastos de prueba automáticos
-  // Ruta: GET /api/expenses/seed
+  // Ruta: GET /api/expenses/seed?profile=Sebastian
   @Get('seed')
-  seed() {
-    return this.expensesService.seed();
+  seed(@Query('profile') profile?: string) {
+    return this.expensesService.seed(profile);
+  }
+
+  // Suma de TODOS los gastos del perfil (no solo la página visible)
+  // Ruta: GET /api/expenses/total?profile=Sebastian
+  @Get('total')
+  total(@Query('profile') profile?: string) {
+    return this.expensesService.total(profile);
+  }
+
+  // Lista de perfiles que ya tienen gastos guardados
+  // Ruta: GET /api/expenses/profiles
+  @Get('profiles')
+  profiles() {
+    return this.expensesService.profiles();
   }
 
   // REQUISITO: Endpoint de Listado con Paginación
-  // Ruta: GET /api/expenses?page=1&limit=10
+  // Ruta: GET /api/expenses?page=1&limit=10&profile=Sebastian
   @Get()
-  findAll(@Query('page') page: number, @Query('limit') limit: number) {
+  findAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('profile') profile?: string,
+  ) {
     // Si no mandan nada, usamos valores por defecto (Página 1, 10 registros)
-    return this.expensesService.findAll(page ? Number(page) : 1, limit ? Number(limit) : 10);
+    return this.expensesService.findAll(
+      page ? Number(page) : 1,
+      limit ? Number(limit) : 10,
+      profile,
+    );
   }
 
   @Get(':id')
